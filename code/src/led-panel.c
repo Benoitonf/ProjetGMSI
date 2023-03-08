@@ -29,8 +29,9 @@ int initialise_led_matrix(int argc, char **argv) {
 }
 
 void set_pixel(int x, int y, int R, int G, int B) {
+    x = (height - 1) - x;
     //Faire les tests de vérification
-    led_canvas_set_pixel(offscreen_canvas, x, y, R, G, B);
+    led_canvas_set_pixel(offscreen_canvas, y, x, R, G, B);
 }
 
 void clear() {
