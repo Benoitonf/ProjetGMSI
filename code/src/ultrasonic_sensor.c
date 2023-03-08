@@ -2,13 +2,13 @@
 
 void initialise_sensors() {
     wiringPiSetupGpio();
-    pinMode(SENSOR_PIN_TRIGGER, OUTPUT);
-    pinMode(SENSOR_PIN_ECHO, INPUT);
-    digitalWrite(SENSOR_PIN_TRIGGER, LOW);
+    pinMode(RIGHT_SENSOR_PIN_TRIGGER, OUTPUT);
+    pinMode(RIGHT_SENSOR_PIN_ECHO, INPUT);
+    digitalWrite(RIGHT_SENSOR_PIN_TRIGGER, LOW);
 
-    pinMode(L_SENSOR_PIN_TRIGGER, OUTPUT);
-    pinMode(L_SENSOR_PIN_ECHO, INPUT);
-    digitalWrite(L_SENSOR_PIN_TRIGGER, LOW);
+    pinMode(LEFT_SENSOR_PIN_TRIGGER, OUTPUT);
+    pinMode(LEFT_SENSOR_PIN_ECHO, INPUT);
+    digitalWrite(LEFT_SENSOR_PIN_TRIGGER, LOW);
 }
 
 float getDistance(int echo, int trigger) {
