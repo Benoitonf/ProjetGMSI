@@ -34,7 +34,7 @@ void set_pixel(int x, int y, int R, int G, int B) {
     led_canvas_set_pixel(offscreen_canvas, y, x, R, G, B);
 }
 
-void clear() {
+void matrix_clear() {
     led_canvas_clear(offscreen_canvas);
 }
 
