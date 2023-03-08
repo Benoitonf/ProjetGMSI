@@ -1,7 +1,8 @@
 CFLAGS=-Wall -O3 -g -Wextra -Wno-unused-parameter
 CXXFLAGS=$(CFLAGS)
-OBJECTS=led-panel.o main.o
-BINARIES=led-panel main
+OBJECTS=*.o
+BINARIES=main
+SOURCES=*.c
 
 # Where our library resides. You mostly only need to change the
 # RGB_LIB_DISTRIBUTION, this is where the library is checked out.
@@ -11,10 +12,6 @@ RGB_LIBDIR=$(RGB_LIB_DISTRIBUTION)/lib
 RGB_LIBRARY_NAME=rgbmatrix
 RGB_LIBRARY=$(RGB_LIBDIR)/lib$(RGB_LIBRARY_NAME).a
 LDFLAGS+=-L$(RGB_LIBDIR) -l$(RGB_LIBRARY_NAME) -lrt -lm -lpthread
-
-# To compile image-example
-MAGICK_CXXFLAGS?=$(shell GraphicsMagick++-config --cppflags --cxxflags)
-MAGICK_LDFLAGS?=$(shell GraphicsMagick++-config --ldflags --libs)
 
 all : $(BINARIES)
 
@@ -28,9 +25,7 @@ $(RGB_LIBRARY): FORCE
 # Since the C example uses the C++ library underneath, which depends on C++
 # runtime stuff, you still have to also link -lstdc++
 main: main.o
-	$(CC) $< -o $@ $(LDFLAGS) -lstdc++
-
-led-panel: led-panel.o
+	$(CC) $(SOURCES) -o $@ $(LDFLAGS) -I$(RGB_INCDIR) -lstdc++
 
 %.o : %.cc
 	$(CXX) -I$(RGB_INCDIR) $(CXXFLAGS) -c -o $@ $<
