@@ -7,6 +7,7 @@
 //sudo ./main --led-no-hardware-pulse --led-gpio-mapping=adafruit-hat
 #include "led-matrix-c.h"
 #include "led-panel.h"
+#include "ultrasonic_sensor.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -14,12 +15,24 @@
 int main(int argc, char **argv)
 {
     initialise_led_matrix(argc, argv);
+    initialise_sensors();
 
     // fprintf(stderr, "Size: %dx%d. Hardware gpio mapping: %s\n",
     //         width, height, options.hardware_mapping);
 
-    set_pixel(0, 0, 255, 255, 255);
-    set_pixel(32, 0, 255, 255, 255);
+    while(1) {
+        float L_dist = getDistance(LEFT_SENSOR_PIN_ECHO, LEFT_SENSOR_PIN_TRIGGER);
+        float R_dist = getDistance(RIGHT_SENSOR_PIN_ECHO, RIGHT_SENSOR_PIN_TRIGGER);
+
+        if (L_dist > 0 && L_dist < 20) {
+            set_pixel(0, 0, 255, 255, 255);
+        }
+
+        if (R_dist > 0 && R_dist < 20) {
+            set_pixel(31, 0, 255, 255, 255);
+        }
+        actualize();
+    }
 
     delete_matrix();
 
