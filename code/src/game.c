@@ -1,19 +1,10 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
-
-#define WINDOW_WIDTH 32
-#define WINDOW_HEIGHT 64
-#define FPS 60
-#define NBRASTEROID 10
-#define TAILLE_VAISSEAU 9
+#include "game.h"
 
 void drawHeader();
 void drawVaisseau();
 void drawAsteroid();
 void initTabAsteroid();
-int num_alea();
+int num_alea(int nmax);
 void moveAsteroid();
 void loop();
 void remiseAZero();
@@ -28,22 +19,15 @@ int compteurloop=0;
 int compteurasteroid=0;
 int vie=3;
 
-struct rgb {
-    int r, g, b, a;
-};
-
 struct rgb tab_display[64][32];
 
 void init_game(){
     //mettre votre code d'initialisation ici
+    srand(time(NULL));
     initTabAsteroid();
 }
 
 void drawGame(){
-    /* Ici je dessine mon jeu
-     * exemple position x, y modifiés dans KeyPressed() et utilisés pour
-     * pouvoir deplacer la figure à chaque boucle de gameLoop()
-     */
     clear();
     drawAsteroid();
     moveAsteroid();
@@ -52,35 +36,7 @@ void drawGame(){
     drawHeader();
     remiseAZero();
     loop();
-    usleep(1000000 / FPS); // 60 images par seconde | 1000000 = 1 seconde
 }
-//void KeyPressed(SDL_Keycode touche){
-    /** @brief event.key.keysym.sym renvoi la touche appuyé
-     *
-     */
-    /*switch (touche) {
-        // Voir doc SDL_Keycode pour plus de touches https://wiki.libsdl.org/SDL_Keycode
-        // ici exemple ou appuyer sur les touches Q | D modifie x (position du carré dans drawGame())
-        case SDLK_q:
-    //drawSquare(vaisseau_x,vaisseau_y,100); SI ÇA MARCHE PAS C'EST A CAUSE D'ICI
-            //touche q appuyé
-            if (vaisseau_x>0){
-                vaisseau_x--;
-            }
-            break;
-        case SDLK_d:
-            //touche d appuyé
-            if (vaisseau_x<WINDOW_WIDTH-TAILLE_VAISSEAU){
-                vaisseau_x++;
-            }
-            break;
-        case SDLK_ESCAPE:
-            freeAndTerminate();
-            break;
-        default:
-            break;
-    }
-}*/
 
 void gameLoop() {
     int programLaunched = 1;
@@ -89,21 +45,6 @@ void gameLoop() {
         drawGame();
     }
 }
-
-int main(){
-    /** @description 3 fonctions dans le main qui permettent de créer l'application et la maintenir ouverte :
-     *  init(...) : initialiser la SDL/ fenêtre
-     *  gameLoop() : boucle de jeu dans laquelle l'application reste ouverte
-     *  clear() : remet a 0 l'ecran pour l'eteindre
-     */
-    srand(time(NULL));
-    init_game();
-    gameLoop();
-    printf("Fin du programme\n");
-    clear();
-}
-
-
 
 void drawHeader(){
     for (int x=0; x<WINDOW_WIDTH; x++){ //drawLine(0,7,32,7)  // Ligne horizontale du header (cyan)

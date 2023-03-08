@@ -9,7 +9,7 @@ int initialise_led_matrix(int argc, char **argv);
 
 void set_pixel(int x, int y, int R, int G, int B);
 
-void clear();
+void matrix_clear();
 
 void actualize();
 
