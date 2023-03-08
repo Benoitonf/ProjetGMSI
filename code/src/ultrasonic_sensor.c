@@ -1,7 +1,6 @@
 #include "ultrasonic_sensor.h"
 
 void initialise_sensors() {
-    wiringPiSetupGpio();
     pinMode(RIGHT_SENSOR_PIN_TRIGGER, OUTPUT);
     pinMode(RIGHT_SENSOR_PIN_ECHO, INPUT);
     digitalWrite(RIGHT_SENSOR_PIN_TRIGGER, LOW);

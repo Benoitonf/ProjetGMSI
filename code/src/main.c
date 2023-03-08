@@ -14,6 +14,7 @@
 
 int main(int argc, char **argv)
 {
+    wiringPiSetupGpio();
     initialise_led_matrix(argc, argv);
     initialise_sensors();
 
