@@ -19,6 +19,8 @@ int main(int argc, char **argv)
     // fprintf(stderr, "Size: %dx%d. Hardware gpio mapping: %s\n",
     //         width, height, options.hardware_mapping);
 
+    set_pixel(0, 0, 255, 255, 255);
+    set_pixel(32, 0, 255, 255, 255);
 
     delete_matrix();
 
