@@ -1,7 +1,7 @@
 CFLAGS=-Wall -O3 -g -Wextra -Wno-unused-parameter
 CXXFLAGS=$(CFLAGS)
-OBJECTS=main.o
-BINARIES=main
+OBJECTS=led-panel.o main.o
+BINARIES=led-panel main
 
 # Where our library resides. You mostly only need to change the
 # RGB_LIB_DISTRIBUTION, this is where the library is checked out.
@@ -27,10 +27,10 @@ $(RGB_LIBRARY): FORCE
 
 # Since the C example uses the C++ library underneath, which depends on C++
 # runtime stuff, you still have to also link -lstdc++
-c-example : c-example.o $(RGB_LIBRARY)
+main: main.o
 	$(CC) $< -o $@ $(LDFLAGS) -lstdc++
 
-main: main.o
+led-panel: led-panel.o
 
 %.o : %.cc
 	$(CXX) -I$(RGB_INCDIR) $(CXXFLAGS) -c -o $@ $<

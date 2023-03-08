@@ -2,7 +2,7 @@
 
 struct RGBLedMatrix *matrix;
 struct LedCanvas *offscreen_canvas;
-extern int width, height;
+int width, height;
 
 int initialise_led_matrix(int argc, char **argv) {
     struct RGBLedMatrixOptions options;

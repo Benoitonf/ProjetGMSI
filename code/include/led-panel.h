@@ -1,6 +1,7 @@
 #ifndef LED_PADDLE_H
 #define LED_PADDLE_H
 #include "led-matrix-c.h"
+#include <string.h>
 
 extern int width, height;
 
