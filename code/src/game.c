@@ -77,8 +77,8 @@ void drawHeader(){
         tab_display[17][y].a = 200;
     }
     if (shield==1){
-        for (int y = 0; y < 6; y++){  //changeColor(255,0,0); drawRect(19,0,13,6);   // Bouclier en gris
-            for (int x = 19; x < WINDOW_WIDTH; x++){
+        for (int y = 0; y < 7; y++){  //changeColor(255,0,0); drawRect(19,0,13,6);   // Bouclier en gris
+            for (int x = 18; x < WINDOW_WIDTH; x++){
                 if (y==0 || y==5 || x==19 || x==WINDOW_WIDTH-1){
                     tab_display[x][y].r = 0;
                     tab_display[x][y].g = 24;
@@ -109,16 +109,20 @@ void changeVie(){
             game=0;
             break;
         case 1:
-            for (int y = 1; y < 5; y++){  //changeColor(0,255,0) drawRect(20,1,11,4)    // 1 VIES 
+            for (int y = 1; y < 6; y++){  //changeColor(0,255,0) drawRect(20,1,11,4)    // 1 VIES 
                 tab_display[20][y].r = 255;
                 tab_display[20][y].g = 0;
                 tab_display[20][y].b = 0;
                 tab_display[20][y].a = 200;
+                tab_display[19][y].r = 255;
+                tab_display[19][y].g = 0;
+                tab_display[19][y].b = 0;
+                tab_display[19][y].a = 200;
             }
             break;
         case 2:
-            for (int y = 1; y < 5; y++){  //changeColor(0,255,0) drawRect(20,1,11,4)    // 2 VIES
-                for (int x = 20; x < 26; x++){
+            for (int y = 1; y < 6; y++){  //changeColor(0,255,0) drawRect(20,1,11,4)    // 2 VIES
+                for (int x = 19; x < 26; x++){
                     tab_display[x][y].r = 255;
                     tab_display[x][y].g = 176;
                     tab_display[x][y].b = 0;
@@ -127,8 +131,8 @@ void changeVie(){
             }
             break;
         case 3:
-            for (int y = 1; y < 5; y++){  //changeColor(0,255,0) drawRect(20,1,11,4)    // 3 VIES 
-                for (int x = 20; x < height-1; x++){
+            for (int y = 1; y < 6; y++){  //changeColor(0,255,0) drawRect(20,1,11,4)    // 3 VIES 
+                for (int x = 19; x < height-1; x++){
                     tab_display[x][y].r = 0;
                     tab_display[x][y].g = 255;
                     tab_display[x][y].b = 0;
@@ -151,6 +155,7 @@ void numToPixel(int chiffre,int grandeur){
                     sevenDigit(3);
                     sevenDigit(5);
                     sevenDigit(6);
+                    sevenDigit(7);
                     break;
                 case 1:
                     sevenDigit(3);
@@ -225,6 +230,7 @@ void numToPixel(int chiffre,int grandeur){
                     sevenDigit(13);
                     sevenDigit(15);
                     sevenDigit(16);
+                    sevenDigit(17);
                     break;
                 case 1:
                     sevenDigit(13);
@@ -299,6 +305,7 @@ void numToPixel(int chiffre,int grandeur){
                     sevenDigit(23);
                     sevenDigit(25);
                     sevenDigit(26);
+                    sevenDigit(27);
                     break;
                 case 1:
                     sevenDigit(23);
@@ -373,6 +380,7 @@ void numToPixel(int chiffre,int grandeur){
                     sevenDigit(33);
                     sevenDigit(35);
                     sevenDigit(36);
+                    sevenDigit(37);
                     break;
                 case 1:
                     sevenDigit(33);
@@ -494,10 +502,19 @@ void drawAsteroid(){
             //drawSquare(tabAsteroid[i].pos_x,tabAsteroid[i].pos_y,tabAsteroid[i].taille);
             for (int y = tabAsteroid[i].pos_y; y < tabAsteroid[i].pos_y2; y++){
                 for (int x = tabAsteroid[i].pos_x; x < tabAsteroid[i].pos_x2; x++){
-                    tab_display[x][y].r = 162;
-                    tab_display[x][y].g = 80;
-                    tab_display[x][y].b = 7;
-                    tab_display[x][y].a = 200;
+                    if ((y==tabAsteroid[i].pos_y+1 || y==tabAsteroid[i].pos_y+2) && (x==tabAsteroid[i].pos_x+1 || x==tabAsteroid[i].pos_x+2)){
+                        tab_display[x][y].r = 97;
+                        tab_display[x][y].g = 32;
+                        tab_display[x][y].b = 5;
+                        tab_display[x][y].a = 200;
+                    }else{
+                        if (num_alea(2)%2==0){
+                            tab_display[x][y].r = num_alea(256);
+                            tab_display[x][y].g = num_alea(256);
+                            tab_display[x][y].b = num_alea(256);
+                            tab_display[x][y].a = 200;
+                        }
+                    }
                 }
             }
         }
@@ -538,6 +555,9 @@ void loopAsteroid(){ // Pour faire apparaitre un asteroid toutes les 200 boucles
                 tabAsteroid[i].vitesse--;
             }
         }
+    }
+    if (compteurloop%6==1){
+        score++;
     }
 }
  
