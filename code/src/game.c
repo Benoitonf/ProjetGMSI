@@ -6,11 +6,13 @@ void drawAsteroid();
 void initTabAsteroid();
 int num_alea(int nmax);
 void moveAsteroid();
-void loop();
+void loopAsteroid();
 void remiseAZero();
 void collision();
 void changeVie();
 void clear();
+void moveVaisseau();
+void gameOver();
 
 //position du carre dessiné dans drawGame()
 int vaisseau_x = 11;
@@ -18,6 +20,7 @@ int vaisseau_y = 63;
 int compteurloop=0;
 int compteurasteroid=0;
 int vie=3;
+int shield=1;
 
 struct rgb tab_display[64][32];
 
@@ -30,12 +33,8 @@ void init_game(){
 void drawGame(){
     clear();
     drawAsteroid();
-    moveAsteroid();
     drawVaisseau();
-    collision();
     drawHeader();
-    remiseAZero();
-    loop();
 }
 
 void gameLoop() {
@@ -43,6 +42,12 @@ void gameLoop() {
     while (programLaunched == 1) {
         // Boucle pour garder le programme ouvert
         drawGame();
+        moveVaisseau();
+        moveAsteroid();
+        collision();
+        remiseAZero();
+        loopAsteroid();
+        changeVie();  
     }
 }
 
@@ -59,17 +64,18 @@ void drawHeader(){
         tab_display[17][y].b = 218;
         tab_display[17][y].a = 200;
     }
-    for (int y = 0; y < 6; y++){  //changeColor(255,0,0); drawRect(19,0,13,6);   // Bouclier en gris
-        for (int x = 19; x < WINDOW_WIDTH; x++){
-            if (y==0 || y==6 || x==19 || x==WINDOW_WIDTH){
-                tab_display[x][y].r = 212;
-                tab_display[x][y].g = 212;
-                tab_display[x][y].b = 212;
-                tab_display[x][y].a = 200;
+    if (shield==1){
+        for (int y = 0; y < 6; y++){  //changeColor(255,0,0); drawRect(19,0,13,6);   // Bouclier en gris
+            for (int x = 19; x < WINDOW_WIDTH; x++){
+                if (y==0 || y==5 || x==19 || x==WINDOW_WIDTH-1){
+                    tab_display[x][y].r = 0;
+                    tab_display[x][y].g = 24;
+                    tab_display[x][y].b = 248;
+                    tab_display[x][y].a = 200;
+                }
             }
         }
     }
-    changeVie();  
 }
 
 void changeVie(){
@@ -77,6 +83,8 @@ void changeVie(){
         case 0:
             printf("vous n avez plus de vie");
             clear();
+            gameOver();
+            sleep(10);
             break;
         case 1:
             for (int y = 1; y < 5; y++){  //changeColor(0,255,0) drawRect(20,1,11,4)    // 1 VIES 
@@ -150,7 +158,7 @@ void initTabAsteroid(){
         tabAsteroid[i].pos_y2=tabAsteroid[i].pos_y+tabAsteroid[i].taille;
         tabAsteroid[i].pos_x2=tabAsteroid[i].pos_x+tabAsteroid[i].taille;
         tabAsteroid[i].etat=0;
-        tabAsteroid[i].vitesse=5; // 1 etant le plus rapide, 10 le plus lent
+        tabAsteroid[i].vitesse=7; // 1 etant le plus rapide, 10 le plus lent
     }
 }
 
@@ -178,7 +186,7 @@ void moveAsteroid(){
                 tabAsteroid[i].pos_y2++;
             }
         }
-        if (tabAsteroid[i].pos_y>WINDOW_HEIGHT){ //Si l'asteroid sort de l'ecran en bas
+        if (tabAsteroid[i].pos_x2>WINDOW_HEIGHT){ //Si l'asteroid sort de l'ecran en bas
             tabAsteroid[i].etat=0;
         }
     }
@@ -189,7 +197,7 @@ int num_alea(int nmax){
     return nbr_alea;
 }
 
-void loop(){ // Pour faire apparaitre un asteroid toutes les 200 boucles
+void loopAsteroid(){ // Pour faire apparaitre un asteroid toutes les 200 boucles
     compteurloop++; //Etat de la boucle
     if (compteurloop%200==1){ // Ajouter une variable a la place de 200
         tabAsteroid[compteurasteroid].etat=1; // On passe l'asteroid actuel a l'etat actif (1)
@@ -198,18 +206,29 @@ void loop(){ // Pour faire apparaitre un asteroid toutes les 200 boucles
             compteurasteroid=0;
         }
     }
+    if (compteurloop%2000==1){
+        for (int i=0;i<NBRASTEROID;i++){
+            if (tabAsteroid[i].vitesse>1){
+                tabAsteroid[i].vitesse--;
+            }
+        }
+    }
 }
 
 void collision(){
     int condition=0;
     for (int i=0;i<NBRASTEROID;i++){
         for (int j=0;j<tabAsteroid[i].taille;j++){
-            if (tab_display[tabAsteroid[i].pos_x2][tabAsteroid[i].pos_y+j].a == 255){ // Si l'asteroid touche un pixel qui a un alpha de 255 (nous n'avons que le vaisseau qui a un alpha de 255 dans notre code)
+            if (tab_display[tabAsteroid[i].pos_x+j][tabAsteroid[i].pos_y2].a == 255){ // Si l'asteroid touche un pixel qui a un alpha de 255 (nous n'avons que le vaisseau qui a un alpha de 255 dans notre code)
                 condition=1;
             }
         }
         if (condition == 1){
-            vie--;
+            if (shield==1){
+                shield--;
+            }else{
+                vie--;
+            }
             tabAsteroid[i].etat=0;
         }
     }
@@ -234,6 +253,32 @@ void clear(){
             tab_display[x][y].g = 0;
             tab_display[x][y].b = 0;
             tab_display[x][y].a = 0;
+        }
+    }
+}
+
+void moveVaisseau(int pas){
+    vaisseau_x=vaisseau_x+pas;
+}
+
+void gameOver(){
+    for(int x=6;x<26;x++){
+        for (int y=25;y<37;y++){
+            if (((y==25) && (x==6 || x==7 || x==8 || x==9 || x==11 || x==12 || x==13 || x==14 || x==16 || x==17 || x==18 || x==19 || x==20 || x==22 || x==23 || x==24 || x==25))
+            || ((y==26) && (x==6 || x==11 || x==14 || x==16 || x==17 || x==19 || x==20 || x==22))
+            || ((y==27) && (x==6 || x==8 || x==9 || x==11 || x==12 || x==13 || x==14 || x==16 || x==18 || x==20 || x==22 || x==23 || x==24 || x==25))
+            || ((y==28) && (x==6 || x==9 || x==11 || x==14 || x==16 || x==20 || x==22))
+            || ((y==29) && (x==6 || x==7 || x==8 || x==9 || x==11 || x==14 || x==16 || x==20 || x==22 || x==23 || x==24 || x==25))
+            || ((y==32) && (x==6 || x==7 || x==8 || x==9 || x==11 || x==15 || x==17 || x==18 || x==19 || x==20 || x==22 || x==23 || x==24 || x==25))
+            || ((y==33) && (x==6 || x==9 || x==11 || x==15 || x==17 || x==22 || x==25))
+            || ((y==34) && (x==6 || x==9 || x==12 || x==14 || x==17 || x==18 || x==19 || x==20 || x==22 || x==23 || x==24 || x==25))
+            || ((y==35) && (x==6 || x==9 || x==12 || x==14 || x==17 || x==22 || x==24))
+            || ((y==36) && (x==6 || x==7 || x==8 || x==9 || x==13 || x==17 || x==18 || x==19 || x==20 || x==22 || x==25))){
+                tab_display[x][y].r = 255;
+                tab_display[x][y].g = 8;
+                tab_display[x][y].b = 244;
+                tab_display[x][y].a = 200;
+            }
         }
     }
 }
