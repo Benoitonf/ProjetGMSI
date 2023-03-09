@@ -87,9 +87,9 @@ void drawHeader(){
         tab_display[17][y].a = 200;
     }
     if (shield==1){
-        for (int y = 0; y < 7; y++){  //changeColor(255,0,0); drawRect(19,0,13,6);   // Bouclier en gris
+        for (int y = 0; y < 7; y++){  //changeColor(255,0,0); drawRect(19,0,13,6);   // Bouclier en bleu 
             for (int x = 18; x < WINDOW_WIDTH; x++){
-                if (y==0 || y==6 || x==19 || x==WINDOW_WIDTH-1){
+                if (y==0 || y==6 || x==18 || x==WINDOW_WIDTH-1){
                     tab_display[x][y].r = 0;
                     tab_display[x][y].g = 24;
                     tab_display[x][y].b = 248;
@@ -502,7 +502,7 @@ void initTabAsteroid(){
         tabAsteroid[i].pos_y2=tabAsteroid[i].pos_y+tabAsteroid[i].taille;
         tabAsteroid[i].pos_x2=tabAsteroid[i].pos_x+tabAsteroid[i].taille;
         tabAsteroid[i].etat=0;
-        tabAsteroid[i].vitesse=7; // 1 etant le plus rapide, 10 le plus lent
+        tabAsteroid[i].vitesse=10; // 1 etant le plus rapide, 9999 le plus lent
     }
 }
  
@@ -518,7 +518,7 @@ void drawAsteroid(){
                         tab_display[x][y].b = 5;
                         tab_display[x][y].a = 200;
                     }else{
-                        if (num_alea(2)%2==0){
+                        if (num_alea(5)%5==0){
                             tab_display[x][y].r = 200 + num_alea(56);
                             tab_display[x][y].g = num_alea(256);
                             tab_display[x][y].b = num_alea(256);
