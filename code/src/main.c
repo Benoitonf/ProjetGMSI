@@ -46,6 +46,9 @@ int main(int argc, char **argv)
     while(1) {
         clock_gettime(CLOCK_MONOTONIC, &allstart);
         clock_gettime(CLOCK_MONOTONIC, &start);
+        double dist_L = getDistance(LEFT_SENSOR_PIN_ECHO, LEFT_SENSOR_PIN_TRIGGER);
+        double dist_R = getDistance(RIGHTT_SENSOR_PIN_ECHO, RIGHT_SENSOR_PIN_TRIGGER);
+        printf("[Distance] Gauche: %.2f | Droite: %.2f\n", dist_L, dist_R);
         gameLoop();
         // usleep(1000);
         clock_gettime(CLOCK_MONOTONIC, &end);
