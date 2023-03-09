@@ -40,13 +40,13 @@ int main(int argc, char **argv)
     init_game();
 
     struct timespec start, end, allstart, allend;
-    double diff_ms, total_ms;
+    double diff_ms, total_ms = 0;
     int frame = 0;
 
     while(1) {
         clock_gettime(CLOCK_MONOTONIC, &allstart);
         clock_gettime(CLOCK_MONOTONIC, &start);
-        // drawGame();
+        gameLoop();
         // usleep(1000);
         clock_gettime(CLOCK_MONOTONIC, &end);
 

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include "led-panel.h"
 
 #define WINDOW_WIDTH 32
 #define WINDOW_HEIGHT 64
