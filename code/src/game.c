@@ -34,6 +34,15 @@ void init_game(){
     srand(time(NULL));
     initTabAsteroid();
 }
+
+void updateDisplay() {
+    for(int x = 0; x < height; x++) {
+        for(int y = 0; y < width; y++) {
+            set_pixel(x, y, tab_display[x][y].r, tab_display[x][y].g, tab_display[x][y].b);
+        }
+    }
+    actualize();
+}
  
 void drawGame(){
     clear();
@@ -61,6 +70,7 @@ void gameLoop() {
         clear();
         gameOver();
     }
+    updateDisplay();
 }
  
 void drawHeader(){
@@ -79,7 +89,7 @@ void drawHeader(){
     if (shield==1){
         for (int y = 0; y < 7; y++){  //changeColor(255,0,0); drawRect(19,0,13,6);   // Bouclier en gris
             for (int x = 18; x < WINDOW_WIDTH; x++){
-                if (y==0 || y==5 || x==19 || x==WINDOW_WIDTH-1){
+                if (y==0 || y==6 || x==19 || x==WINDOW_WIDTH-1){
                     tab_display[x][y].r = 0;
                     tab_display[x][y].g = 24;
                     tab_display[x][y].b = 248;
@@ -456,7 +466,7 @@ void numToPixel(int chiffre,int grandeur){
 void drawVaisseau(){
     int i=0;
     int j=0;
-    for (int y = 54; y < WINDOW_HEIGHT; y++){  //changeColor(0,255,0) drawRect(20,1,11,4)
+    for (int y = 55; y < WINDOW_HEIGHT; y++){  //changeColor(0,255,0) drawRect(20,1,11,4)
         for (int x = vaisseau_x; x < vaisseau_x+TAILLE_VAISSEAU; x++){
             if(((i==0 || i==1) && j==4) || ((i==2 || i==3 || i==4) && (j==3 || j==4 || j==5)) || ((i==5 || i==6 || i==7) && (j>0 && j<8)) || (i==8)){
                 tab_display[x][y].r = 255;
@@ -509,7 +519,7 @@ void drawAsteroid(){
                         tab_display[x][y].a = 200;
                     }else{
                         if (num_alea(2)%2==0){
-                            tab_display[x][y].r = num_alea(256);
+                            tab_display[x][y].r = 200 + num_alea(56);
                             tab_display[x][y].g = num_alea(256);
                             tab_display[x][y].b = num_alea(256);
                             tab_display[x][y].a = 200;
@@ -595,8 +605,8 @@ void remiseAZero(){
 }
  
 void clear(){
-    for(int x=0;x<WINDOW_WIDTH;x++){
-        for (int y=0;y<WINDOW_HEIGHT;y++){
+    for(int x=0;x<height;x++){
+        for (int y=0;y<width;y++){
             tab_display[x][y].r = 0;
             tab_display[x][y].g = 0;
             tab_display[x][y].b = 0;
@@ -611,17 +621,17 @@ void moveVaisseau(int pas){
  
 void gameOver(){
     for(int x=6;x<26;x++){
-        for (int y=25;y<37;y++){
-            if (((y==25) && (x==6 || x==7 || x==8 || x==9 || x==11 || x==12 || x==13 || x==14 || x==16 || x==20 || x==22 || x==23 || x==24 || x==25))
-            || ((y==26) && (x==6 || x==11 || x==14 || x==16 || x==17 || x==19 || x==20 || x==22))
-            || ((y==27) && (x==6 || x==8 || x==9 || x==11 || x==12 || x==13 || x==14 || x==16 || x==18 || x==20 || x==22 || x==23 || x==24 || x==25))
-            || ((y==28) && (x==6 || x==9 || x==11 || x==14 || x==16 || x==20 || x==22))
-            || ((y==29) && (x==6 || x==7 || x==8 || x==9 || x==11 || x==14 || x==16 || x==20 || x==22 || x==23 || x==24 || x==25))
-            || ((y==32) && (x==6 || x==7 || x==8 || x==9 || x==11 || x==15 || x==17 || x==18 || x==19 || x==20 || x==22 || x==23 || x==24 || x==25))
-            || ((y==33) && (x==6 || x==9 || x==11 || x==15 || x==17 || x==22 || x==25))
-            || ((y==34) && (x==6 || x==9 || x==12 || x==14 || x==17 || x==18 || x==19 || x==20 || x==22 || x==23 || x==24 || x==25))
-            || ((y==35) && (x==6 || x==9 || x==12 || x==14 || x==17 || x==22 || x==24))
-            || ((y==36) && (x==6 || x==7 || x==8 || x==9 || x==13 || x==17 || x==18 || x==19 || x==20 || x==22 || x==25))){
+        for (int y=26;y<38;y++){
+            if (((y==26) && (x==6 || x==7 || x==8 || x==9 || x==11 || x==12 || x==13 || x==14 || x==16 || x==20 || x==22 || x==23 || x==24 || x==25))
+            || ((y==27) && (x==6 || x==11 || x==14 || x==16 || x==17 || x==19 || x==20 || x==22))
+            || ((y==28) && (x==6 || x==8 || x==9 || x==11 || x==12 || x==13 || x==14 || x==16 || x==18 || x==20 || x==22 || x==23 || x==24 || x==25))
+            || ((y==29) && (x==6 || x==9 || x==11 || x==14 || x==16 || x==20 || x==22))
+            || ((y==30) && (x==6 || x==7 || x==8 || x==9 || x==11 || x==14 || x==16 || x==20 || x==22 || x==23 || x==24 || x==25))
+            || ((y==33) && (x==6 || x==7 || x==8 || x==9 || x==11 || x==15 || x==17 || x==18 || x==19 || x==20 || x==22 || x==23 || x==24 || x==25))
+            || ((y==34) && (x==6 || x==9 || x==11 || x==15 || x==17 || x==22 || x==25))
+            || ((y==35) && (x==6 || x==9 || x==12 || x==14 || x==17 || x==18 || x==19 || x==20 || x==22 || x==23 || x==24 || x==25))
+            || ((y==36) && (x==6 || x==9 || x==12 || x==14 || x==17 || x==22 || x==24))
+            || ((y==37) && (x==6 || x==7 || x==8 || x==9 || x==13 || x==17 || x==18 || x==19 || x==20 || x==22 || x==25))){
                 tab_display[x][y].r = 255;
                 tab_display[x][y].g = 8;
                 tab_display[x][y].b = 244;
