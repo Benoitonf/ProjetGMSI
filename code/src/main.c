@@ -71,7 +71,12 @@ int main(int argc, char **argv)
             printf("Exit: >30ms, frame:%d\n", frame);
             return 1;
         }
-
+        if (dist_L<20){
+            moveVaisseau(-1);
+        }
+        if (dist_R<20){
+            moveVaisseau(1);
+        }
         if (frame % 60 == 0) {
             printf("frame: %4d | time: %2.2lfs | Moyen: %2.2lf\n", frame, total_ms*1e-3, frame / (total_ms*1e-3));
         }

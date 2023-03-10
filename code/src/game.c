@@ -733,7 +733,9 @@ void clear(){
 }
  
 void moveVaisseau(int pas){
-    vaisseau_x=vaisseau_x+pas;
+    if (vaisseau_x+pas>=0 && vaisseau_x+pas<24){
+        vaisseau_x=vaisseau_x+pas;
+    }
 }
  
 void gameOver(){
