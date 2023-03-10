@@ -506,6 +506,16 @@ void initShieldRevive(){
     shieldRevive.pos_x2=shieldRevive.pos_x+5;
     shieldRevive.pos_y2=shieldRevive.pos_y+4;
     shieldRevive.etat=0;
+    if (shield==1){
+        vaisseau_rouge=0;
+        vaisseau_vert=24;
+        vaisseau_bleu=248;
+    }
+    if (shield==0){
+        vaisseau_rouge=255;
+        vaisseau_vert=255;
+        vaisseau_bleu=255;
+    }
 }
 
 struct Asteroid{
