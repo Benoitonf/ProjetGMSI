@@ -496,7 +496,7 @@ struct Bonus{
     int pos_x2;
     int pos_y2;
     int etat;
-} 
+};
 
 struct Bonus shieldRevive;
 
