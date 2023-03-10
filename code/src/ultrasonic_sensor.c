@@ -12,18 +12,24 @@ void initialise_sensors() {
 
 float getDistance(int echo, int trigger) {
     
+    int i=0;
+    
     digitalWrite(trigger, HIGH);
     usleep(10);
     digitalWrite(trigger, LOW);
 
     struct timespec StartTime, StopTime, diff_echo;
 
-    while(digitalRead(echo) == LOW) {
+    while(digitalRead(echo) == LOW && i<10000) {
         clock_gettime(CLOCK_REALTIME, &StartTime);
+        i++;
     }
-
-    while(digitalRead(echo) == HIGH) {
+    
+    i=0;
+    
+    while(digitalRead(echo) == HIGH && i<10000) {
         clock_gettime(CLOCK_REALTIME, &StopTime);
+        i++;
     }
     if ((StopTime.tv_nsec - StartTime.tv_nsec) < 0){
             diff_echo.tv_sec = StopTime.tv_sec - StartTime.tv_sec - 1;
