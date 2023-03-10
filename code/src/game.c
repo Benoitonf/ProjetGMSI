@@ -18,6 +18,7 @@ void gameOver();
 void sevenDigit();
 void numToPixel();
 void afficheScore();
+void moveBonus();
  
 //position du carre dessiné dans drawGame()
 int vaisseau_x = 11;
