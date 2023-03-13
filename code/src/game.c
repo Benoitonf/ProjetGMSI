@@ -1,9 +1,11 @@
 #include "game.h"
  
 void drawHeader();
-void drawVaisseau();
+void drawVaisseau(int rouge, int vert, int bleu);
 void drawAsteroid();
+void drawShieldRevive();
 void initTabAsteroid();
+void initShieldRevive();
 int num_alea(int nmax);
 void moveAsteroid();
 void loopAsteroid();
@@ -16,6 +18,7 @@ void gameOver();
 void sevenDigit();
 void numToPixel();
 void afficheScore();
+void moveBonus();
  
 //position du carre dessiné dans drawGame()
 int vaisseau_x = 11;
@@ -26,6 +29,9 @@ int vie=3;
 int shield=1;
 int score=0;
 int game=1;
+int vaisseau_rouge=255; //taux de rouge du vaisseau (0-255)
+int vaisseau_vert=255; // taux de vert
+int vaisseau_bleu=255; // taux de bleu
  
 struct rgb tab_display[32][64];
  
@@ -33,6 +39,7 @@ void init_game(){
     //mettre votre code d'initialisation ici
     srand(time(NULL));
     initTabAsteroid();
+    initShieldRevive();
 }
 
 void updateDisplay() {
@@ -48,7 +55,8 @@ void drawGame(){
     clear();
 	changeVie();
     drawAsteroid();
-    drawVaisseau();
+    drawShieldRevive();
+    drawVaisseau(vaisseau_rouge,vaisseau_vert,vaisseau_bleu);
     drawHeader();
  
     for(int x = 0; x < height; x++) {
@@ -63,6 +71,7 @@ void gameLoop() {
     if (game==1){
         drawGame();
         moveAsteroid();
+        moveBonus();
         collision();
         remiseAZero();
         loopAsteroid();
@@ -463,15 +472,15 @@ void numToPixel(int chiffre,int grandeur){
     }
 }
  
-void drawVaisseau(){
+void drawVaisseau(int rouge, int vert, int bleu){
     int i=0;
     int j=0;
     for (int y = 55; y < WINDOW_HEIGHT; y++){  //changeColor(0,255,0) drawRect(20,1,11,4)
         for (int x = vaisseau_x; x < vaisseau_x+TAILLE_VAISSEAU; x++){
             if(((i==0 || i==1) && j==4) || ((i==2 || i==3 || i==4) && (j==3 || j==4 || j==5)) || ((i==5 || i==6 || i==7) && (j>0 && j<8)) || (i==8)){
-                tab_display[x][y].r = 255;
-                tab_display[x][y].g = 255;
-                tab_display[x][y].b = 255;
+                tab_display[x][y].r = rouge;
+                tab_display[x][y].g = vert;
+                tab_display[x][y].b = bleu;
                 tab_display[x][y].a = 255;
             }j++;
  
@@ -480,7 +489,35 @@ void drawVaisseau(){
         j=0;
     }  
 }
- 
+
+struct Bonus{
+    int pos_x;
+    int pos_y;
+    int pos_x2;
+    int pos_y2;
+    int etat;
+};
+
+struct Bonus shieldRevive;
+
+void initShieldRevive(){
+    shieldRevive.pos_x=num_alea(WINDOW_HEIGHT-5);
+    shieldRevive.pos_y=8;
+    shieldRevive.pos_x2=shieldRevive.pos_x+5;
+    shieldRevive.pos_y2=shieldRevive.pos_y+4;
+    shieldRevive.etat=0;
+    if (shield==1){
+        vaisseau_rouge=0;
+        vaisseau_vert=24;
+        vaisseau_bleu=248;
+    }
+    if (shield==0){
+        vaisseau_rouge=255;
+        vaisseau_vert=255;
+        vaisseau_bleu=255;
+    }
+}
+
 struct Asteroid{
     int taille;
     int pos_x;
@@ -534,7 +571,7 @@ void drawAsteroid(){
 void moveAsteroid(){
     for (int i=0;i<NBRASTEROID;i++){
         if (tabAsteroid[i].etat==1){
-            if (compteurloop%tabAsteroid[i].vitesse==1){
+            if (compteurloop%tabAsteroid[i].vitesse==1){ // Il descend d'un pixel sur vitesse de l'asteroid (10 en debut de partie)
                 tabAsteroid[i].pos_y++;
                 tabAsteroid[i].pos_y2++;
             }
@@ -542,6 +579,18 @@ void moveAsteroid(){
         if (tabAsteroid[i].pos_y2>WINDOW_HEIGHT){ //Si l'asteroid sort de l'ecran en bas
             tabAsteroid[i].etat=0;
         }
+    }
+}
+
+void moveBonus(){
+    if (shieldRevive.etat==1){
+        if (compteurloop%(tabAsteroid[0].vitesse+3)==1){ // La vitesse du bonus depend de celle des asteroides
+            shieldRevive.pos_y++;
+            shieldRevive.pos_y2++;
+        }
+    }
+    if (shieldRevive.pos_y2>WINDOW_HEIGHT){ //Si l'asteroid sort de l'ecran en bas
+        shieldRevive.etat=0;
     }
 }
  
@@ -559,15 +608,38 @@ void loopAsteroid(){ // Pour faire apparaitre un asteroid toutes les 200 boucles
             compteurasteroid=0;
         }
     }
-    if (compteurloop%2000==1){
+    if (compteurloop%2000==1999){ // Fait apparaitre un bonus tous les 2000 loop
+        shieldRevive.etat=1;
+    }
+    if (compteurloop%2000==1999){//augmente la vitesse tous les 2000 loop
         for (int i=0;i<NBRASTEROID;i++){
             if (tabAsteroid[i].vitesse>1){
                 tabAsteroid[i].vitesse--;
             }
         }
     }
-    if (compteurloop%6==1){
+    if (compteurloop%6==1){ // incremente le score toutes les 6 loop (dizieme de seconde)
         score++;
+    }
+}
+
+void drawShieldRevive(){ //Coeur bleu qui tombe bonus
+    int i=0;
+    int j=0;
+    if (shieldRevive.etat==1){
+        for (int y=shieldRevive.pos_y;y<=shieldRevive.pos_y2;y++){
+            for (int x=shieldRevive.pos_x;x<=shieldRevive.pos_x2;x++){
+                if ((i==0 && (j==0 || j==1 || j==3 || j==4)) || (i==1 && (j==0 || j==1 || j==2 || j==3 || j==4)) || (i==2 && (j==1 || j==2 || j==3)) || (i==3 && j==2)){
+                    tab_display[x][y].r=0;
+                    tab_display[x][y].g=24;
+                    tab_display[x][y].b=248; // Meme couleur que le shield
+                    tab_display[x][y].a=200;
+                }
+                j++;
+            }
+            i++;
+            j=0;
+        }
     }
 }
  
@@ -582,13 +654,50 @@ void collision(){
         if (condition == 1){
             if (shield==1){
                 shield--;
+                vaisseau_rouge=255;
+                vaisseau_vert=255;
+                vaisseau_bleu=255;
             }else{
-				printf("Vie: %d\n", vie);
                 vie--;
             }
 			condition = 0;
             tabAsteroid[i].etat=0;
         }
+    }
+    if (tab_display[shieldRevive.pos_x][shieldRevive.pos_y+1].a == 255){
+        shieldRevive.etat=0;
+        shield=1;
+        vaisseau_rouge=0;
+        vaisseau_vert=24;
+        vaisseau_bleu=248;
+    }
+    if (tab_display[shieldRevive.pos_x+1][shieldRevive.pos_y+2].a == 255){
+        shieldRevive.etat=0;
+        shield=1;
+        vaisseau_rouge=0;
+        vaisseau_vert=24;
+        vaisseau_bleu=248;
+    }
+    if (tab_display[shieldRevive.pos_x+2][shieldRevive.pos_y+3].a == 255){
+        shieldRevive.etat=0;
+        shield=1;
+        vaisseau_rouge=0;
+        vaisseau_vert=24;
+        vaisseau_bleu=248;
+    }
+    if (tab_display[shieldRevive.pos_x+3][shieldRevive.pos_y+2].a == 255){
+        shieldRevive.etat=0;
+        shield=1;
+        vaisseau_rouge=0;
+        vaisseau_vert=24;
+        vaisseau_bleu=248;
+    }
+    if (tab_display[shieldRevive.pos_x+4][shieldRevive.pos_y+1].a == 255){
+        shieldRevive.etat=0;
+        shield=1;
+        vaisseau_rouge=0;
+        vaisseau_vert=24;
+        vaisseau_bleu=248;
     }
 }
  
@@ -599,8 +708,16 @@ void remiseAZero(){
             tabAsteroid[i].pos_y2=tabAsteroid[i].pos_y+tabAsteroid[i].taille;
             tabAsteroid[i].pos_x=num_alea(WINDOW_WIDTH-tabAsteroid[i].taille);
             tabAsteroid[i].pos_x2=tabAsteroid[i].pos_x+tabAsteroid[i].taille;
+            tabAsteroid[i].etat=2; // WARNING SI CA MARCHE PAS C'EST ICI : METTRE CETTE LIGNE EN COMMENTAIRE
             //Ajouter un random pour la vitesse
         }
+    }
+    if (shieldRevive.etat==0){
+        shieldRevive.pos_x=num_alea(WINDOW_HEIGHT-5);
+        shieldRevive.pos_y=8;
+        shieldRevive.pos_x2=shieldRevive.pos_x+5;
+        shieldRevive.pos_y2=shieldRevive.pos_y+4;
+        shieldRevive.etat=2;
     }
 }
  
@@ -616,7 +733,9 @@ void clear(){
 }
  
 void moveVaisseau(int pas){
-    vaisseau_x=vaisseau_x+pas;
+    if (vaisseau_x+pas>=0 && vaisseau_x+pas<24){
+        vaisseau_x=vaisseau_x+pas;
+    }
 }
  
 void gameOver(){

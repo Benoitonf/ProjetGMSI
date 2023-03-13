@@ -26,10 +26,12 @@ float getDistance(struct gpiod_line *echo, struct gpiod_line *trigger) {
 
     while(gpiod_line_get_value(echo) == 0) {
         clock_gettime(CLOCK_REALTIME, &StartTime);
+        i++;
     }
 
     while(gpiod_line_get_value(echo) == 1) {
         clock_gettime(CLOCK_REALTIME, &StopTime);
+        i++;
     }
     
     double diff_time = (((double)end.tv_sec + 1.0e-9*end.tv_nsec) -  ((double)start.tv_sec + 1.0e-9*start.tv_nsec));
