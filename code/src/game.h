@@ -20,6 +20,7 @@ struct rgb {
 void init_game();
 void drawGame();
 void gameLoop();
+void moveVaisseau(int pas);
 
 
 #endif
