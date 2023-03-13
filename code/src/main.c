@@ -12,13 +12,6 @@
 #define LEFT_BUTTON_PIN 5
 #define RIGHT_BUTTON_PIN 6
 
-void initialize_gpiod() {
-    const char *chipname = "gpiochip0";
-    struct gpiod_chip *chip;
-
-    chip = gpiod_chip_open_by_name(chipname);
-}
-
 /**
  * Calcule la différence en secondes entre les deux structures timespec
  * @param start - le temps de départ
@@ -44,9 +37,12 @@ void update_matrix_led(double time) {
 
 int main(int argc, char **argv)
 {
-    initialize_gpiod();
+    const char *chipname = "gpiochip0";
+    struct gpiod_chip *chip;
+    chip = gpiod_chip_open_by_name(chipname);
+
     initialise_led_matrix(argc, argv);
-    initialise_sensors();
+    initialise_sensors(chip);
     init_game();
 
     struct timespec start, end, allstart, allend;

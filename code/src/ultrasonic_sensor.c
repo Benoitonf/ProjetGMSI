@@ -2,7 +2,7 @@
 
 struct gpiod_line *Left_trigger_line, *Left_echo_line, *Right_trigger_line, *Right_echo_line;
 
-void initialise_sensors(struct gpiod *chip) {
+void initialise_sensors(struct gpiod_chip *chip) {
     Left_trigger_line = gpiod_chip_get_line(chip, LEFT_SENSOR_PIN_TRIGGER);
     Left_echo_line = gpiod_chip_get_line(chip, LEFT_SENSOR_PIN_ECHO);
 
