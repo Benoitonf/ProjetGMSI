@@ -2,12 +2,22 @@
 #include "led-panel.h"
 #include "game.h"
 #include "ultrasonic_sensor.h"
+#include <gpiod.h>
 
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
 
 #define LED_REFRESH_RATE 60 // Fréquence d'actualisation de l'écran
+#define LEFT_BUTTON_PIN 5
+#define RIGHT_BUTTON_PIN 6
+
+void initialize_gpiod() {
+    const char *chipname = "gpiochip0";
+    struct gpiod_chip *chip;
+
+    chip = gpiod_chip_open_by_name(chipname);
+}
 
 /**
  * Calcule la différence en secondes entre les deux structures timespec
@@ -34,7 +44,7 @@ void update_matrix_led(double time) {
 
 int main(int argc, char **argv)
 {
-    wiringPiSetupGpio();
+    initialize_gpiod();
     initialise_led_matrix(argc, argv);
     initialise_sensors();
     init_game();
@@ -46,8 +56,8 @@ int main(int argc, char **argv)
     while(1) {
         clock_gettime(CLOCK_MONOTONIC, &allstart);
         clock_gettime(CLOCK_MONOTONIC, &start);
-        double dist_L = getDistance(LEFT_SENSOR_PIN_ECHO, LEFT_SENSOR_PIN_TRIGGER);
-        double dist_R = getDistance(RIGHTT_SENSOR_PIN_ECHO, RIGHT_SENSOR_PIN_TRIGGER);
+        double dist_L = getDistance(Left_echo_line, Left_trigger_line);
+        double dist_R = getDistance(Right_echo_line, Right_trigger_line);
         printf("[Distance] Gauche: %.2f | Droite: %.2f\n", dist_L, dist_R);
         gameLoop();
         // usleep(1000);

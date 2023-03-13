@@ -1,12 +1,12 @@
 #ifndef ULTRASONIC_SENSOR_H
-#define U
+#define ULTRASONIC_SENSOR_H
 
 #include <unistd.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <wiringPi.h>
+#include <gpiod.h>
 
 #define LEFT_SENSOR_PIN_ECHO 15
 #define LEFT_SENSOR_PIN_TRIGGER 14
@@ -14,8 +14,10 @@
 #define RIGHT_SENSOR_PIN_ECHO 7
 #define RIGHT_SENSOR_PIN_TRIGGER 8
 
-void initialise_sensors();
+extern struct gpiod_line *Left_trigger_line, *Left_echo_line, *Right_trigger_line, *Right_echo_line;
 
-float getDistance(int echo, int trigger);
+void initialise_sensors(struct gpiod *chip);
+
+float getDistance(struct gpiod_line *echo, struct gpiod_line *trigger);
 
 #endif

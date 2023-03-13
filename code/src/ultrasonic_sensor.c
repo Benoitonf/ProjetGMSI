@@ -1,41 +1,41 @@
 #include "ultrasonic_sensor.h"
 
-void initialise_sensors() {
-    pinMode(RIGHT_SENSOR_PIN_TRIGGER, OUTPUT);
-    pinMode(RIGHT_SENSOR_PIN_ECHO, INPUT);
-    digitalWrite(RIGHT_SENSOR_PIN_TRIGGER, LOW);
+struct gpiod_line *Left_trigger_line, *Left_echo_line, *Right_trigger_line, *Right_echo_line;
 
-    pinMode(LEFT_SENSOR_PIN_TRIGGER, OUTPUT);
-    pinMode(LEFT_SENSOR_PIN_ECHO, INPUT);
-    digitalWrite(LEFT_SENSOR_PIN_TRIGGER, LOW);
+void initialise_sensors(struct gpiod *chip) {
+    Left_trigger_line = gpiod_chip_get_line(chip, LEFT_SENSOR_PIN_TRIGGER);
+    Left_echo_line = gpiod_chip_get_line(chip, LEFT_SENSOR_PIN_ECHO);
+
+    Right_trigger_line = gpiod_chip_get_line(chip, RIGHT_SENSOR_PIN_TRIGGER);
+    Right_echo_line = gpiod_chip_get_line(chip, RIGHT_SENSOR_PIN_ECHO);
+
+    gpiod_line_request_output(Left_trigger_line, "Trigger Gauche", 0);
+    gpiod_line_request_input(Left_echo_line, "Echo Gauche");
+
+    gpiod_line_request_output(Right_trigger_line, "Trigger Droite", 0);
+    gpiod_line_request_input(Right_echo_line, "Echo Droite");
 }
 
-float getDistance(int echo, int trigger) {
+float getDistance(struct gpiod_line *echo, struct gpiod_line *trigger) {
     
-    digitalWrite(trigger, HIGH);
+    gpiod_line_set_value(trigger, 1);
     usleep(10);
-    digitalWrite(trigger, LOW);
+    gpiod_line_set_value(trigger, 0);
 
     struct timespec StartTime, StopTime, diff_echo;
 
-    while(digitalRead(echo) == LOW) {
+    while(gpiod_line_get_value(echo) == 0) {
         clock_gettime(CLOCK_REALTIME, &StartTime);
     }
 
-    while(digitalRead(echo) == HIGH) {
+    while(gpiod_line_get_value(echo) == 1) {
         clock_gettime(CLOCK_REALTIME, &StopTime);
     }
-    if ((StopTime.tv_nsec - StartTime.tv_nsec) < 0){
-            diff_echo.tv_sec = StopTime.tv_sec - StartTime.tv_sec - 1;
-            diff_echo.tv_nsec = 1000000000 + StopTime.tv_nsec - StartTime.tv_sec;
-    } else {
-            diff_echo.tv_sec = StopTime.tv_sec - StartTime.tv_sec;
-            diff_echo.tv_nsec = StopTime.tv_nsec - StartTime.tv_nsec;
-    }
-    double echo_time = ((diff_echo.tv_sec * 1000000000) + (diff_echo.tv_nsec));
-    echo_time /= 1000000000;
+    
+    double diff_time = (((double)end.tv_sec + 1.0e-9*end.tv_nsec) -  ((double)start.tv_sec + 1.0e-9*start.tv_nsec));
+
     //calcul dist cm
-    double distance = (echo_time * 17150);
+    double distance = (diff_time * 17150);
 
     return distance;
 }
