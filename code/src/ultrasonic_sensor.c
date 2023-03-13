@@ -30,7 +30,7 @@ float getDistance(struct gpiod_line *echo, struct gpiod_line *trigger) {
         i++;
     }
 
-    int i = 0;
+    i = 0;
 
     while(gpiod_line_get_value(echo) == 1 && i < 10000) {
         clock_gettime(CLOCK_REALTIME, &StopTime);
