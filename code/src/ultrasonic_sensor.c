@@ -22,19 +22,22 @@ float getDistance(struct gpiod_line *echo, struct gpiod_line *trigger) {
     usleep(10);
     gpiod_line_set_value(trigger, 0);
 
-    struct timespec StartTime, StopTime, diff_echo;
+    struct timespec StartTime, StopTime;
+    int i = 0;
 
-    while(gpiod_line_get_value(echo) == 0) {
+    while(gpiod_line_get_value(echo) == 0 && i < 10000) {
         clock_gettime(CLOCK_REALTIME, &StartTime);
         i++;
     }
 
-    while(gpiod_line_get_value(echo) == 1) {
+    int i = 0;
+
+    while(gpiod_line_get_value(echo) == 1 && i < 10000) {
         clock_gettime(CLOCK_REALTIME, &StopTime);
         i++;
     }
     
-    double diff_time = (((double)end.tv_sec + 1.0e-9*end.tv_nsec) -  ((double)start.tv_sec + 1.0e-9*start.tv_nsec));
+    double diff_time = (((double)StopTime.tv_sec + 1.0e-9*StopTime.tv_nsec) -  ((double)StartTime.tv_sec + 1.0e-9*StartTime.tv_nsec));
 
     //calcul dist cm
     double distance = (diff_time * 17150);
